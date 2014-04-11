@@ -1,0 +1,16 @@
+{
+    "contents" : "\n### Pirana-generated deSolve code\nlibrary (deSolve)\nlibrary (MASS)\nlibrary (lattice)\n\n### Dose and time Settings\nA_init     <- rep(0, 2)  # Initial state of ODE system\nn_doses    <- 3\ndose_cmt   <- 1\nii         <- 24\ndose_times <- seq (from = 0, by=ii, to=n_doses*ii)\ndose_amts  <- c(rep (100, n_doses), 0)\ntimes      <- seq(from=0, to=ii*n_doses, by=.5)  # Integration window and stepsize\nobs_c      <- c(1:2)  # Observation compartments\nn_ind      <- 20\nn_par      <- 10\n\n### Parameters\ntheta <- c(0.1, 0.1, 0.1, 0.1, 1)\nmat <- c((0.1),\n         0, (0.1),\n         0, 0, (0.1))\ntrans.lower <- function(x,y) { ifelse(y<x, x*(x-1)/2 + y, y*(y-1)/2 + x) }\nfull.mat <- function(p) { outer(1:p,1:p, trans.lower) }\nomega <- matrix (mat[full.mat(3)], nrow=3, byrow=T)\netas   <- mvrnorm(n = n_ind, mu=rep(0, 3), Sigma=omega )\n\ndraw_params <- function (eta) {\n  p <- list()  # Parameter list \n  p$CL <- theta[1]*exp(eta[1]) \n  p$V  <- theta[2]*exp(eta[2]) \n  p$KA <- theta[3]*exp(eta[3]) \n  p$S1 <- p$V \n  return(p)\n}\n\n### ODE system\ndes <- function (t, A, p) {  # ODE system \n  p$K20 <- p$CL/p$V\n  dAdt_1 <- -p$KA*A[1] \n  dAdt_2 <- -p$K20*A[2]  +p$KA*A[1]\n  return ( list ( c (  dAdt_1, dAdt_2 ) ) )\n}\n\n### Perform numerical integration, collect data\nnum_int_wrapper<- function (i, times, A_init, des, p_ind) {\n  des_out <- lsoda(A_init, times, des, p_ind)\n  dat_ind <- c()\n  for (j in 1:length(obs_c)) {\n    dat_ind <- rbind (dat_ind, cbind(i, t=des_out[,1], comp=obs_c[j], ipred=des_out[,(obs_c[j]+1)]))\n  }\n  return(data.frame(dat_ind))\n}\n\ncomb_dat <- c()\nfor (i in 1:n_ind) {\n  p_ind   <- draw_params (eta = etas[i,])\n  for (k in 1:(length(dose_times)-1)) {\n    if (k > 1) {\n      A_upd <- dat_ind[dat_ind$t==tail(time_window,1),]$ipred\n    } else {\n      A_upd <- A_init\n    }\n    A_upd[dose_cmt] <- A_upd[dose_cmt] + dose_amts[k]\n    time_window <- times[(times > dose_times[k]) & (times <= dose_times[k+1])]\n    dat_ind <- num_int_wrapper (i, time_window, A_upd, des, p_ind)\n    comb_dat <- rbind (comb_dat, dat_ind)\n  }\n}\n\n### Plot\nxyplot ( ipred~t|as.factor(comp), group=i, data=data.frame(comb_dat),\n         type='l', col='lightblue' )\n",
+    "created" : 1397234028827.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "647767003",
+    "id" : "350B9D7F",
+    "lastKnownWriteTime" : 1397234522,
+    "path" : "~/projects/shiny_PK/PK_model_ODE.R",
+    "project_path" : null,
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

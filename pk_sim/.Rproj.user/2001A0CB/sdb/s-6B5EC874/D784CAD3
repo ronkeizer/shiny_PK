@@ -1,0 +1,16 @@
+{
+    "contents" : "\n# This is the user-interface definition of a Shiny web application.\n# You can find out more about building applications with Shiny here:\n# \n# http://www.rstudio.com/shiny/\n#\n\nlibrary(shiny)\n\nshinyUI(pageWithSidebar(\n  \n  # Application title\n  headerPanel(\"PK example\"),\n  \n  # Sidebar with a slider input for number of observations\n  sidebarPanel(\n    sliderInput(\"cl\", \n                \"Clearance:\", \n                min = 1, \n                max = 50, \n                value = 5),\n    sliderInput(\"v\", \n                \"Volume of distribution:\", \n                min = 5, \n                max = 200, \n                value = 25),\n    sliderInput(\"ka\", \n                \"Ka:\", \n                min = .05, \n                max = 5, \n                value = 1)\n    \n  ),  \n  # Show a plot of the generated distribution\n  mainPanel(\n    plotOutput(\"pk_plot\")\n  )\n))\n",
+    "created" : 1397233488846.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "29355175",
+    "id" : "D784CAD3",
+    "lastKnownWriteTime" : 1397234509,
+    "path" : "~/projects/shiny_PK/pk_sim/ui.R",
+    "project_path" : "ui.R",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}
