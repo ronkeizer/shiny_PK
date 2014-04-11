@@ -28,8 +28,17 @@ shinyUI(pageWithSidebar(
                 "Ka:", 
                 min = .05, 
                 max = 5, 
-                value = 1)
-    
+                value = 1),
+    sliderInput("n_doses", 
+                "Number of doses:", 
+                min = 1, 
+                max = 10, 
+                value = 5),
+    sliderInput("interval", 
+                "Dosing interval:", 
+                min = 6, 
+                max = 168, 
+                value = 24)    
   ),  
   # Show a plot of the generated distribution
   mainPanel(

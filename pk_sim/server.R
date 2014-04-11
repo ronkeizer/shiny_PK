@@ -48,9 +48,9 @@ shinyServer(function(input, output) {
 
     ### Dose and time Settings
     A_init     <- rep(0, 2)  # Initial state of ODE system
-    n_doses    <- 3
+    n_doses    <- input$n_doses
     dose_cmt   <- 1
-    ii         <- 24
+    ii         <- input$interval
     dose_times <- seq (from = 0, by=ii, to=n_doses*ii)
     dose_amts  <- c(rep (100, n_doses), 0)
     times      <- seq(from=0, to=ii*n_doses, by=.5)  # Integration window and stepsize
